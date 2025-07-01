@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM loaded, initializing popup');
 
     try {
-        // Load current settings
-        const settings = await chrome.storage.sync.get(['enabled', 'showInPrivateRepos', 'autoCheck']);
+    // Load current settings
+    const settings = await chrome.storage.sync.get(['enabled', 'showInPrivateRepos', 'autoCheck']);
         console.log('Loaded settings:', settings);
 
-        // Set checkbox states
+    // Set checkbox states
         const enabledCheckbox = document.getElementById('enabled');
         const privateReposCheckbox = document.getElementById('showInPrivateRepos');
         const autoCheckCheckbox = document.getElementById('autoCheck');
@@ -19,20 +19,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (privateReposCheckbox) privateReposCheckbox.checked = settings.showInPrivateRepos === true;
         if (autoCheckCheckbox) autoCheckCheckbox.checked = settings.autoCheck !== false;
 
-        // Save settings
+    // Save settings
         const saveButton = document.getElementById('saveSettings');
         if (saveButton) {
             saveButton.addEventListener('click', async () => {
                 console.log('Saving settings...');
 
                 try {
-                    const newSettings = {
+        const newSettings = {
                         enabled: enabledCheckbox ? enabledCheckbox.checked : true,
                         showInPrivateRepos: privateReposCheckbox ? privateReposCheckbox.checked : false,
                         autoCheck: autoCheckCheckbox ? autoCheckCheckbox.checked : true
-                    };
+        };
 
-                    await chrome.storage.sync.set(newSettings);
+        await chrome.storage.sync.set(newSettings);
                     console.log('Settings saved:', newSettings);
                     showStatus('Settings saved! Refresh GitHub pages to apply changes.', 'success');
                 } catch (error) {
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('Error initializing popup:', error);
         showStatus('Error loading settings', 'error');
-    }
+        }
 });
 
 function showStatus(message, type) {
@@ -52,12 +52,12 @@ function showStatus(message, type) {
 
     const statusEl = document.getElementById('status');
     if (statusEl) {
-        statusEl.textContent = message;
-        statusEl.className = `status ${type}`;
-        statusEl.style.display = 'block';
+    statusEl.textContent = message;
+    statusEl.className = `status ${type}`;
+    statusEl.style.display = 'block';
 
-        setTimeout(() => {
-            statusEl.style.display = 'none';
+    setTimeout(() => {
+        statusEl.style.display = 'none';
         }, 4000);
     }
 }

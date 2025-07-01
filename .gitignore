@@ -1,2 +1,7 @@
 .DS_Store
 github-index.html
+
+# Downloaded dependencies (use 'make deps' to download)
+js-yaml.min.js
+renderCards.js
+preview.css
