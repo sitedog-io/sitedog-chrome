@@ -1,0 +1,215 @@
+/* SiteDog GitHub Integration Styles */
+
+.sitedog-card-container {
+  margin: 16px 0;
+  border: 1px solid var(--borderColor-default, #d0d7de);
+  border-radius: 6px;
+  background-color: var(--bgColor-default, #ffffff);
+  overflow: hidden;
+}
+
+.sitedog-header {
+  background-color: var(--bgColor-muted, #f6f8fa);
+  border-bottom: 1px solid var(--borderColor-default, #d0d7de);
+  padding: 12px 16px;
+}
+
+.sitedog-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fgColor-default, #1f2328);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sitedog-cards {
+  padding: 16px;
+}
+
+.sitedog-error {
+  color: var(--fgColor-danger, #d1242f);
+  background-color: var(--bgColor-attention-muted, #fff8c5);
+  border: 1px solid var(--borderColor-attention-muted, #ffd33d);
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* Override SiteDog default styles to match GitHub */
+.sitedog-cards .card {
+  background: var(--bgColor-default, #ffffff) !important;
+  border: 1px solid var(--borderColor-muted, #d0d7de) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  margin-bottom: 12px !important;
+}
+
+.sitedog-cards .card:last-child {
+  margin-bottom: 0 !important;
+}
+
+.sitedog-cards .card-header {
+  background: var(--bgColor-muted, #f6f8fa) !important;
+  border-bottom: 1px solid var(--borderColor-muted, #d0d7de) !important;
+  padding: 12px 16px !important;
+  border-radius: 6px 6px 0 0 !important;
+}
+
+.sitedog-cards .card-title {
+  color: var(--fgColor-default, #1f2328) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+}
+
+.sitedog-cards .card-title:hover {
+  color: var(--fgColor-accent, #0969da) !important;
+  text-decoration: underline !important;
+}
+
+.sitedog-cards .card-description {
+  color: var(--fgColor-muted, #656d76) !important;
+  font-size: 14px !important;
+  margin: 8px 0 0 0 !important;
+  line-height: 1.5 !important;
+}
+
+.sitedog-cards .card-body {
+  padding: 16px !important;
+}
+
+.sitedog-cards .card-stats {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  margin-top: 12px !important;
+  font-size: 12px !important;
+  color: var(--fgColor-muted, #656d76) !important;
+}
+
+.sitedog-cards .card-stat {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.sitedog-cards .services-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 12px !important;
+}
+
+.sitedog-cards .service-tag {
+  background: var(--bgColor-accent-muted, #ddf4ff) !important;
+  color: var(--fgColor-accent, #0969da) !important;
+  border: 1px solid var(--borderColor-accent-muted, #54aeff66) !important;
+  border-radius: 12px !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .sitedog-card-container {
+    background-color: var(--bgColor-default, #0d1117);
+    border-color: var(--borderColor-default, #30363d);
+  }
+
+  .sitedog-header {
+    background-color: var(--bgColor-muted, #161b22);
+    border-color: var(--borderColor-default, #30363d);
+  }
+
+  .sitedog-header h3 {
+    color: var(--fgColor-default, #e6edf3);
+  }
+
+  .sitedog-cards .card {
+    background: var(--bgColor-default, #0d1117) !important;
+    border-color: var(--borderColor-muted, #30363d) !important;
+  }
+
+  .sitedog-cards .card-header {
+    background: var(--bgColor-muted, #161b22) !important;
+    border-color: var(--borderColor-muted, #30363d) !important;
+  }
+
+  .sitedog-cards .card-title {
+    color: var(--fgColor-default, #e6edf3) !important;
+  }
+
+  .sitedog-cards .card-title:hover {
+    color: var(--fgColor-accent, #2f81f7) !important;
+  }
+
+  .sitedog-cards .card-description {
+    color: var(--fgColor-muted, #7d8590) !important;
+  }
+
+  .sitedog-cards .card-stats {
+    color: var(--fgColor-muted, #7d8590) !important;
+  }
+
+  .sitedog-cards .service-tag {
+    background: var(--bgColor-accent-muted, #0c2d6b) !important;
+    color: var(--fgColor-accent, #2f81f7) !important;
+    border-color: var(--borderColor-accent-muted, #1f6feb) !important;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sitedog-cards .services-list {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .sitedog-cards .card-stats {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+}
+
+/* Loading state */
+.sitedog-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  color: var(--fgColor-muted, #656d76);
+  font-size: 14px;
+}
+
+.sitedog-loading::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--fgColor-accent, #0969da);
+  border-radius: 50%;
+  animation: sitedog-spin 1s linear infinite;
+}
+
+@keyframes sitedog-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Integration with GitHub's existing elements */
+.sitedog-card-container + .BorderGrid-row,
+.sitedog-card-container + .js-navigation-container {
+  margin-top: 16px;
+}
+
+/* Ensure proper spacing in GitHub's layout */
+.repository-content .sitedog-card-container {
+  margin: 16px 0;
+}

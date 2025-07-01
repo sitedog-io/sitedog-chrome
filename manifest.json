@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "SiteDog GitHub Integration",
+  "version": "1.0.0",
+  "description": "Shows SiteDog project cards directly in GitHub repository UI",
+  
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  
+  "host_permissions": [
+    "https://github.com/*",
+    "https://api.github.com/*",
+    "https://raw.githubusercontent.com/*",
+    "https://sitedog.io/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SiteDog Settings"
+  },
+  
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png", 
+    "128": "icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["*.js", "*.css"],
+      "matches": ["https://github.com/*"]
+    }
+  ]
+}
