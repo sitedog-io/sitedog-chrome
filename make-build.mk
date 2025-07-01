@@ -51,3 +51,14 @@ check-deps:
 
 # Force rebuild (clean + build)
 rebuild: clean build
+
+# Package for Chrome Web Store
+package: build
+	@echo "📦 Packaging for Chrome Web Store..."
+	@rm -f sitedog-chrome-extension.zip
+	@zip -r sitedog-chrome-extension.zip . \
+		-x "*.git*" "*.DS_Store*" "make-*.mk" "Makefile" "README.md" \
+		-x "styles.css.backup" "github-index.html" \
+		-x "node_modules/*" "*.log"
+	@echo "✅ Package ready: sitedog-chrome-extension.zip"
+	@echo "📋 Ready for Chrome Web Store upload!"

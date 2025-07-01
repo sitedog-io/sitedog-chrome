@@ -1,158 +1,102 @@
+# SiteDog Chrome Extension
 
-# SiteDog GitHub Integration
+Chrome extension that seamlessly integrates SiteDog project cards into GitHub repository UI.
 
-🐶 **Chrome extension** that shows SiteDog project cards directly in GitHub repository UI.
+## Features
 
-## 🚀 Features
+- **Automatic Detection** - Detects `sitedog.yml` files in GitHub repositories
+- **Native Integration** - Adds "Project Stack" section to GitHub sidebar
+- **Official Rendering** - Uses SiteDog's official rendering engine
+- **Theme Support** - Supports both light and dark GitHub themes
+- **Zero Configuration** - Works automatically, no setup required
 
-- ✅ **Automatic Detection** - Detects `sitedog.yml` in any GitHub repository
-- ✅ **BorderGrid Integration** - Cards appear as native BorderGrid-row in sidebar
-- ✅ **Native GitHub Styling** - Matches GitHub's design system perfectly
-- ✅ **Project Cards** - Beautiful cards showing project info and services
-- ✅ **Dark Mode Support** - Follows GitHub's theme automatically
-- ✅ **Responsive Design** - Works on desktop, tablet, and mobile
-- ✅ **Live Detection** - Automatically loads when sitedog.yml is found
+## Installation
 
-## 📦 Installation
+### Chrome Web Store (Recommended)
+*Coming soon - will be available on Chrome Web Store*
 
 ### Development Mode
-1. Clone or download this extension
-2. Open Chrome and go to `chrome://extensions/`
-3. Enable "Developer mode" (top right)
+1. Download the extension files
+2. Open `chrome://extensions/` in Chrome
+3. Enable "Developer mode"
 4. Click "Load unpacked" and select the extension folder
 5. Visit any GitHub repository with `sitedog.yml`
 
-### Production (Future)
-Will be available on Chrome Web Store.
+## How It Works
 
-## 🎯 How It Works
+1. **Repository Detection** - Automatically detects GitHub repository pages
+2. **Config Discovery** - Checks for `sitedog.yml` in repository root
+3. **YAML Parsing** - Parses configuration using js-yaml library
+4. **Card Rendering** - Renders project cards using SiteDog's official engine
+5. **Sidebar Integration** - Inserts "Project Stack" section in GitHub sidebar
 
-1. **Page Detection** - Extension runs on all `github.com/*/*` repository pages
-2. **Config Discovery** - Checks for `sitedog.yml` in repository root via GitHub's raw API
-3. **YAML Parsing** - Parses the configuration file using built-in parser
-4. **BorderGrid Integration** - Creates new BorderGrid-row in repository sidebar
-5. **Card Rendering** - Renders beautiful project cards with GitHub's native styling
-6. **Seamless Integration** - Cards appear between "About" and "Releases" sections
+## Supported Configuration
 
-## ⚙️ Configuration
-
-The extension works automatically with no configuration needed:
-
-- **Automatic detection** - Detects `sitedog.yml` files automatically
-- **Live updates** - Refreshes when navigating between repositories
-- **Error handling** - Gracefully handles missing or invalid config files
-
-## 🔧 Technical Details
-
-### Files Structure
-```
-sitedog-chrome/
-├── manifest.json          # Extension manifest
-├── content.js             # Main content script (runs on GitHub)
-├── background.js          # Background service worker
-├── styles.css             # GitHub-integrated styles
-├── popup.html             # Settings popup UI
-├── popup.js               # Settings popup logic
-└── README.md              # This file
-```
-
-### How Cards Are Rendered
-
-1. Content script detects repository info from URL
-2. Fetches `sitedog.yml` from `raw.githubusercontent.com`
-3. Parses YAML configuration using built-in parser
-4. Creates new `BorderGrid-row` element with proper GitHub classes
-5. Generates project cards with native GitHub Box components
-6. Inserts BorderGrid-row into sidebar between About and Releases sections
-7. Applies GitHub's native CSS variables for theming
-
-### GitHub API Integration
-
-- Uses `raw.githubusercontent.com` for config fetching
-- No authentication required for public repos
-- Respects GitHub's rate limiting
-- Works with any branch (defaults to `main`)
-
-## 🎨 Design Integration
-
-The extension seamlessly integrates with GitHub's design system:
-
-- Uses GitHub's CSS variables for theming
-- Supports both light and dark modes
-- Matches GitHub's spacing and typography
-- Responsive design for mobile/tablet
-- Native GitHub component styling
-
-## 🔒 Privacy & Security
-
-- **No data collection** - Extension works entirely locally
-- **Read-only access** - Only reads public repository files
-- **No external tracking** - Does not send data to third parties
-- **Minimal permissions** - Only requests necessary Chrome permissions
-
-## 🛠️ Development
-
-### Debugging
-1. Open Chrome DevTools on any GitHub page
-2. Check Console for `SiteDog:` prefixed logs
-3. Use "Inspect popup" on extension icon for popup debugging
-
-### Testing
-- Test on repositories with `sitedog.yml` files
-- Verify dark/light mode switching
-- Check responsive behavior
-- Test settings persistence
-
-## 🎯 Supported Repositories
-
-The extension works with any GitHub repository containing:
-- `sitedog.yml` file in the root directory
-- Valid YAML syntax
-- SiteDog-compatible configuration format
-
-## 📝 Example Configuration
+Works with standard SiteDog YAML configuration:
 
 ```yaml
 frontend:
-  description: "Главный фронтенд проект SiteDog"
-  url: "https://sitedog.io"
+  description: "React frontend application"
+  url: "https://app.example.com"
   services:
     - "Web Interface"
     - "API Client"
-    - "Authentication"
 
 backend:
-  description: "Backend API для SiteDog платформы"
-  url: "https://api.sitedog.io"
+  description: "Node.js API server"
+  url: "https://api.example.com"
   services:
     - "REST API"
     - "Database"
-    - "Queue System"
 
 cli:
-  description: "Инструмент командной строки SiteDog"
-  url: "https://github.com/sitedog-io/sitedog-cli"
+  description: "Command line tool"
+  url: "https://github.com/user/project-cli"
   services:
     - "CLI Tool"
-    - "Configuration Manager"
-    - "Project Generator"
+    - "Configuration"
 ```
 
-### Card Display
+## Development
 
-Each project in your `sitedog.yml` becomes a beautiful card showing:
-- **Project name** as the card title
-- **Description** if provided
-- **Services** as labeled tags
-- **URL** as a clickable "Open Project" link
+### Build Commands
 
-## 🔄 Updates
+```bash
+# Install dependencies and build
+make build
 
-The extension automatically:
-- Checks for config changes when navigating
-- Refreshes cards when settings change
-- Updates rendering when SiteDog renderer updates
+# Package for Chrome Web Store
+make package
 
----
+# Clean dependencies
+make clean
 
-🐶 **SiteDog** - Making GitHub repositories more discoverable!
+# Check dependencies
+make check-deps
+```
+
+### File Structure
+
+- `manifest.json` - Chrome extension manifest
+- `content.js` - Main content script for GitHub integration
+- `styles.css` - GitHub UI adaptation styles
+- `background.js` - Service worker
+- `popup.html/js` - Extension popup interface
+
+## Privacy & Security
+
+- **No Data Collection** - Extension works entirely locally
+- **Read-Only Access** - Only reads public repository files
+- **No Tracking** - Does not send data anywhere
+- **Minimal Permissions** - Only requests necessary permissions
+
+## Technical Details
+
+- Uses GitHub's raw.githubusercontent.com API to fetch sitedog.yml
+- Integrates with GitHub's BorderGrid component system
+- Matches GitHub's design system using CSS variables
+- Supports responsive design for all device sizes
+
+## License
+
+Part of the SiteDog ecosystem.
