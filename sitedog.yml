@@ -1,0 +1,23 @@
+frontend:
+  description: "Главный фронтенд проект SiteDog"
+  url: "https://sitedog.io"
+  services:
+    - "Web Interface"
+    - "API Client"
+    - "Authentication"
+
+backend:
+  description: "Backend API для SiteDog платформы"
+  url: "https://api.sitedog.io"
+  services:
+    - "REST API"
+    - "Database"
+    - "Queue System"
+
+cli:
+  description: "Инструмент командной строки SiteDog"
+  url: "https://github.com/sitedog-io/sitedog-cli"
+  services:
+    - "CLI Tool"
+    - "Configuration Manager"
+    - "Project Generator"

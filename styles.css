@@ -213,3 +213,126 @@
 .repository-content .sitedog-card-container {
   margin: 16px 0;
 }
+
+/* BorderGrid-row для SiteDog секции */
+.BorderGrid-row .sitedog-cards {
+  /* Основные стили контейнера */
+}
+
+/* Стили для карточек проектов */
+.sitedog-cards .Box {
+  background: var(--bgColor-default, #ffffff);
+  border: 1px solid var(--borderColor-default, #d0d7de);
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.sitedog-cards .Box:hover {
+  border-color: var(--borderColor-accent-muted, #54aeff66);
+}
+
+.sitedog-cards .Box-body {
+  padding: 16px;
+}
+
+/* Заголовки проектов */
+.sitedog-cards h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fgColor-default, #1f2328);
+}
+
+/* Описания проектов */
+.sitedog-cards p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Стили для меток сервисов */
+.sitedog-cards .Label {
+  background: var(--bgColor-accent-muted, #ddf4ff);
+  color: var(--fgColor-accent, #0969da);
+  border: 1px solid var(--borderColor-accent-muted, #54aeff66);
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* Ссылки проектов */
+.sitedog-cards .Link--primary {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sitedog-cards .Link--primary:hover {
+  text-decoration: underline;
+}
+
+.sitedog-cards .octicon {
+  fill: currentColor;
+}
+
+/* Стили для состояния загрузки */
+.sitedog-cards .text-small.color-fg-muted {
+  font-style: italic;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .sitedog-cards .Box {
+    background: var(--bgColor-default, #0d1117);
+    border-color: var(--borderColor-default, #30363d);
+  }
+
+  .sitedog-cards .Box:hover {
+    border-color: var(--borderColor-accent-muted, #1f6feb);
+  }
+
+  .sitedog-cards h3 {
+    color: var(--fgColor-default, #e6edf3);
+  }
+
+  .sitedog-cards .Label {
+    background: var(--bgColor-accent-muted, #0c2d6b);
+    color: var(--fgColor-accent, #2f81f7);
+    border-color: var(--borderColor-accent-muted, #1f6feb);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sitedog-cards .d-flex.flex-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sitedog-cards .Label {
+    margin-bottom: 4px;
+  }
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sitedog-cards .Box {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Обеспечиваем правильное позиционирование в GitHub layout */
+.BorderGrid.about-margin .BorderGrid-row:has(.sitedog-cards) {
+  /* Дополнительные стили при необходимости */
+}

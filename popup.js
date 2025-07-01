@@ -1,49 +1,63 @@
 // SiteDog GitHub Integration Popup Script
 
+console.log('SiteDog Popup loaded');
+
 document.addEventListener('DOMContentLoaded', async () => {
-    // Load current settings
-    const settings = await chrome.storage.sync.get(['enabled', 'showInPrivateRepos', 'autoCheck']);
+    console.log('DOM loaded, initializing popup');
 
-    // Set checkbox states
-    document.getElementById('enabled').checked = settings.enabled !== false;
-    document.getElementById('showInPrivateRepos').checked = settings.showInPrivateRepos === true;
-    document.getElementById('autoCheck').checked = settings.autoCheck !== false;
+    try {
+        // Load current settings
+        const settings = await chrome.storage.sync.get(['enabled', 'showInPrivateRepos', 'autoCheck']);
+        console.log('Loaded settings:', settings);
 
-    // Save settings
-    document.getElementById('saveSettings').addEventListener('click', async () => {
-        const newSettings = {
-            enabled: document.getElementById('enabled').checked,
-            showInPrivateRepos: document.getElementById('showInPrivateRepos').checked,
-            autoCheck: document.getElementById('autoCheck').checked
-        };
+        // Set checkbox states
+        const enabledCheckbox = document.getElementById('enabled');
+        const privateReposCheckbox = document.getElementById('showInPrivateRepos');
+        const autoCheckCheckbox = document.getElementById('autoCheck');
 
-        await chrome.storage.sync.set(newSettings);
-        showStatus('Settings saved!', 'success');
+        if (enabledCheckbox) enabledCheckbox.checked = settings.enabled !== false;
+        if (privateReposCheckbox) privateReposCheckbox.checked = settings.showInPrivateRepos === true;
+        if (autoCheckCheckbox) autoCheckCheckbox.checked = settings.autoCheck !== false;
 
-        // Refresh all GitHub tabs
-        const tabs = await chrome.tabs.query({ url: 'https://github.com/*/*' });
-        tabs.forEach(tab => {
-            chrome.tabs.reload(tab.id);
-        });
-    });
+        // Save settings
+        const saveButton = document.getElementById('saveSettings');
+        if (saveButton) {
+            saveButton.addEventListener('click', async () => {
+                console.log('Saving settings...');
 
-    // Refresh current page
-    document.getElementById('refreshPage').addEventListener('click', async () => {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (tab && tab.url.includes('github.com')) {
-            chrome.tabs.reload(tab.id);
-            showStatus('Page refreshed!', 'info');
+                try {
+                    const newSettings = {
+                        enabled: enabledCheckbox ? enabledCheckbox.checked : true,
+                        showInPrivateRepos: privateReposCheckbox ? privateReposCheckbox.checked : false,
+                        autoCheck: autoCheckCheckbox ? autoCheckCheckbox.checked : true
+                    };
+
+                    await chrome.storage.sync.set(newSettings);
+                    console.log('Settings saved:', newSettings);
+                    showStatus('Settings saved! Refresh GitHub pages to apply changes.', 'success');
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                    showStatus('Error saving settings', 'error');
+                }
+            });
         }
-    });
+    } catch (error) {
+        console.error('Error initializing popup:', error);
+        showStatus('Error loading settings', 'error');
+    }
 });
 
 function showStatus(message, type) {
-    const statusEl = document.getElementById('status');
-    statusEl.textContent = message;
-    statusEl.className = `status ${type}`;
-    statusEl.style.display = 'block';
+    console.log('Showing status:', message, type);
 
-    setTimeout(() => {
-        statusEl.style.display = 'none';
-    }, 3000);
+    const statusEl = document.getElementById('status');
+    if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+        statusEl.style.display = 'block';
+
+        setTimeout(() => {
+            statusEl.style.display = 'none';
+        }, 4000);
+    }
 }

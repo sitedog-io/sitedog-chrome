@@ -17,13 +17,17 @@ class SiteDogGitHubIntegration {
     }
 
     start() {
+        console.log('SiteDog: Starting content script');
+
         // Check if we're on a GitHub repository page
         if (!this.isRepositoryPage()) {
+            console.log('SiteDog: Not a repository page, skipping');
             return;
         }
 
         this.repoInfo = this.extractRepoInfo();
         if (!this.repoInfo) {
+            console.log('SiteDog: Could not extract repo info');
             return;
         }
 
@@ -79,19 +83,26 @@ class SiteDogGitHubIntegration {
 
             // Check if sitedog.yml exists in the repository
             const configUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/sitedog.yml`;
+            console.log('SiteDog: Checking for config at:', configUrl);
 
             const response = await fetch(configUrl);
+            console.log('SiteDog: Config fetch response status:', response.status);
 
             if (response.ok) {
                 const yamlContent = await response.text();
-                console.log('SiteDog: Found sitedog.yml:', yamlContent);
+                console.log('SiteDog: Found sitedog.yml, content length:', yamlContent.length);
 
                 this.sitedogConfig = this.parseYaml(yamlContent);
-                if (this.sitedogConfig) {
+                console.log('SiteDog: Parsed config:', this.sitedogConfig);
+
+                if (this.sitedogConfig && Object.keys(this.sitedogConfig).length > 0) {
+                    console.log('SiteDog: Rendering cards for projects:', Object.keys(this.sitedogConfig));
                     this.renderSiteDogCard();
+                } else {
+                    console.log('SiteDog: Config is empty or invalid');
                 }
             } else {
-                console.log('SiteDog: No sitedog.yml found in repository');
+                console.log('SiteDog: No sitedog.yml found in repository (status:', response.status, ')');
             }
         } catch (error) {
             console.error('SiteDog: Error checking for config:', error);
@@ -160,28 +171,23 @@ class SiteDogGitHubIntegration {
         const cardContainer = this.createCardContainer();
         insertionPoint.insertAdjacentElement('afterend', cardContainer);
 
-        // Load external resources and render cards
-        this.loadExternalResources().then(() => {
-            this.renderCards(cardContainer);
-        });
+        // Render cards immediately
+        this.renderCards(cardContainer);
     }
 
     findInsertionPoint() {
-        // Look for common GitHub elements where we can insert our card
-        const candidates = [
-            // After the repo description
-            'p[data-testid="repository-description"]',
-            // After the about section
-            '.BorderGrid-cell .BorderGrid-row:last-child',
-            // Fallback: after file list
-            '.js-navigation-container',
-        ];
+        // Look for the BorderGrid container in the sidebar
+        const borderGrid = document.querySelector('.BorderGrid.about-margin');
+        if (!borderGrid) {
+            console.log('SiteDog: BorderGrid not found');
+            return null;
+        }
 
-        for (const selector of candidates) {
-            const element = document.querySelector(selector);
-            if (element) {
-                return element;
-            }
+        // Find the About section (first BorderGrid-row)
+        const aboutRow = borderGrid.querySelector('.BorderGrid-row');
+        if (aboutRow) {
+            console.log('SiteDog: Found About section for insertion');
+            return aboutRow;
         }
 
         return null;
@@ -189,79 +195,104 @@ class SiteDogGitHubIntegration {
 
     createCardContainer() {
         const container = document.createElement('div');
-        container.className = 'sitedog-card-container';
+        container.className = 'BorderGrid-row';
         container.innerHTML = `
-            <div class="sitedog-header">
-                <h3>🐶 SiteDog Project Overview</h3>
+            <div class="BorderGrid-cell">
+                <h2 class="h4 mb-3">
+                    🐶 SiteDog Project Overview
+                </h2>
+                <div class="sitedog-cards" id="sitedog-cards">
+                    <div class="text-small color-fg-muted">
+                        Loading SiteDog configuration...
+                    </div>
+                </div>
             </div>
-            <div class="sitedog-cards" id="sitedog-cards"></div>
         `;
         return container;
     }
 
-    async loadExternalResources() {
-        // Load YAML parser
-        if (!window.jsyaml) {
-            await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js');
-        }
 
-        // Load SiteDog render script
-        if (!window.renderCards) {
-            await this.loadScript('https://sitedog.io/js/renderCards.js');
-        }
-    }
-
-    loadScript(src) {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    }
 
     renderCards(container) {
         const cardsElement = container.querySelector('#sitedog-cards');
-        if (!cardsElement || !window.renderCards) {
-            console.error('SiteDog: Could not render cards');
+        if (!cardsElement) {
+            console.error('SiteDog: Could not find cards element');
             return;
         }
 
-        // Convert our parsed config back to YAML for the render function
-        const yamlString = this.configToYaml(this.sitedogConfig);
+        // Clear loading message
+        cardsElement.innerHTML = '';
 
-        try {
-            window.renderCards(yamlString, cardsElement, (config, result, error) => {
-                if (!result) {
-                    cardsElement.innerHTML = `<div class="sitedog-error">Error rendering cards: ${error}</div>`;
-                }
-            });
-        } catch (error) {
-            console.error('SiteDog: Error rendering cards:', error);
-            cardsElement.innerHTML = `<div class="sitedog-error">Error: ${error.message}</div>`;
+        // Create cards for each project in the config
+        const projects = Object.keys(this.sitedogConfig);
+
+        if (projects.length === 0) {
+            cardsElement.innerHTML = `
+                <div class="text-small color-fg-muted">
+                    No projects configured in sitedog.yml
+                </div>
+            `;
+            return;
         }
+
+        // Create project cards
+        projects.forEach(projectName => {
+            const projectConfig = this.sitedogConfig[projectName];
+            const card = this.createProjectCard(projectName, projectConfig);
+            cardsElement.appendChild(card);
+        });
     }
 
-    configToYaml(config) {
-        // Simple conversion back to YAML format
-        let yaml = '';
-        for (const [projectName, projectConfig] of Object.entries(config)) {
-            yaml += `${projectName}:\n`;
-            for (const [key, value] of Object.entries(projectConfig)) {
-                if (key === 'services' && Array.isArray(value)) {
-                    yaml += `  ${key}:\n`;
-                    for (const service of value) {
-                        yaml += `    - ${service}\n`;
-                    }
-                } else {
-                    yaml += `  ${key}: "${value}"\n`;
-                }
-            }
-            yaml += '\n';
+    createProjectCard(projectName, config) {
+        const card = document.createElement('div');
+        card.className = 'Box mb-3';
+
+        let servicesHtml = '';
+        if (config.services && config.services.length > 0) {
+            servicesHtml = `
+                <div class="mt-2">
+                    <div class="text-small color-fg-muted mb-1">Services:</div>
+                    <div class="d-flex flex-wrap">
+                        ${config.services.map(service => `
+                            <span class="Label mr-1 mb-1">${service}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
         }
-        return yaml;
+
+        card.innerHTML = `
+            <div class="Box-body">
+                <div class="d-flex flex-items-center">
+                    <div class="flex-1">
+                        <h3 class="text-normal mb-1">
+                            <strong>${projectName}</strong>
+                        </h3>
+                        ${config.description ? `
+                            <p class="text-small color-fg-muted mb-2">
+                                ${config.description}
+                            </p>
+                        ` : ''}
+                        ${servicesHtml}
+                        ${config.url ? `
+                            <div class="mt-2">
+                                <a href="${config.url}" target="_blank" rel="noopener noreferrer" class="Link--primary text-small">
+                                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon octicon-link mr-1">
+                                        <path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path>
+                                    </svg>
+                                    Open Project
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return card;
     }
+
+
 }
 
 // Initialize the extension
