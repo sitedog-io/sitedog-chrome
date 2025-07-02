@@ -60,8 +60,9 @@ async function checkForSitedogYml() {
     return;
   }
 
-  // Try to fetch sitedog.yml from main branch
-  const sitedogUrl = `https://raw.githubusercontent.com/${repoPath}/main/sitedog.yml`;
+  // Try to fetch sitedog.yml from main branch (with cache busting)
+  const timestamp = Date.now();
+  const sitedogUrl = `https://raw.githubusercontent.com/${repoPath}/main/sitedog.yml?t=${timestamp}`;
 
   try {
     console.log(`🐕 SiteDog: Fetching ${sitedogUrl}`);
